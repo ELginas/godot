@@ -147,6 +147,8 @@ unzFile ZipArchive::get_file_handle(const String &p_file) const {
 }
 
 bool ZipArchive::try_open_pack(const String &p_path, bool p_replace_files, uint64_t p_offset = 0) {
+	// WARN_PRINT(vformat("[A] ZipArchive try_open_pack."));
+
 	// load with offset feature only supported for PCK files
 	ERR_FAIL_COND_V_MSG(p_offset != 0, false, "Invalid PCK data. Note that loading files with a non-zero offset isn't supported with ZIP archives.");
 

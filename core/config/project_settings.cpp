@@ -489,6 +489,7 @@ bool ProjectSettings::_load_resource_pack(const String &p_pack, bool p_replace_f
 
 	//if data.pck is found, all directory access will be from here
 	DirAccess::make_default<DirAccessPack>(DirAccess::ACCESS_RESOURCES);
+	WARN_PRINT(vformat("[A] Set DirAccessPack for DirAccess::ACCESS_RESOURCES."));
 	using_datapack = true;
 
 	return true;
@@ -1160,6 +1161,7 @@ const HashMap<StringName, PropertyInfo> &ProjectSettings::get_custom_property_in
 }
 
 bool ProjectSettings::is_using_datapack() const {
+	WARN_PRINT(vformat("[A] Check if using datapack."));
 	return using_datapack;
 }
 
@@ -1379,6 +1381,7 @@ void ProjectSettings::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("globalize_path", "path"), &ProjectSettings::globalize_path);
 	ClassDB::bind_method(D_METHOD("save"), &ProjectSettings::save);
 	ClassDB::bind_method(D_METHOD("load_resource_pack", "pack", "replace_files", "offset"), &ProjectSettings::_load_resource_pack, DEFVAL(true), DEFVAL(0));
+	ClassDB::bind_method(D_METHOD("is_using_datapack"), &ProjectSettings::is_using_datapack);
 
 	ClassDB::bind_method(D_METHOD("save_custom", "file"), &ProjectSettings::_save_custom_bnd);
 

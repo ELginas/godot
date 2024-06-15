@@ -178,6 +178,7 @@ void Resource::reset_state() {
 Error Resource::copy_from(const Ref<Resource> &p_resource) {
 	ERR_FAIL_COND_V(p_resource.is_null(), ERR_INVALID_PARAMETER);
 	if (get_class() != p_resource->get_class()) {
+		WARN_PRINT(vformat("[A] Resource is different class."));
 		return ERR_INVALID_PARAMETER;
 	}
 
@@ -191,6 +192,7 @@ Error Resource::copy_from(const Ref<Resource> &p_resource) {
 			continue;
 		}
 		if (E.name == "resource_path") {
+			WARN_PRINT(vformat("[A] Resource path matches."));
 			continue; //do not change path
 		}
 
@@ -202,12 +204,14 @@ Error Resource::copy_from(const Ref<Resource> &p_resource) {
 void Resource::reload_from_file() {
 	String path = get_path();
 	if (!path.is_resource_file()) {
+		WARN_PRINT(vformat("[A] Resource is not a file."));
 		return;
 	}
 
 	Ref<Resource> s = ResourceLoader::load(ResourceLoader::path_remap(path), get_class(), ResourceFormatLoader::CACHE_MODE_IGNORE);
 
 	if (!s.is_valid()) {
+		WARN_PRINT(vformat("[A] Resource is not valid."));
 		return;
 	}
 
@@ -526,6 +530,8 @@ void Resource::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_local_to_scene"), &Resource::is_local_to_scene);
 	ClassDB::bind_method(D_METHOD("get_local_scene"), &Resource::get_local_scene);
 	ClassDB::bind_method(D_METHOD("setup_local_to_scene"), &Resource::setup_local_to_scene);
+
+	ClassDB::bind_method(D_METHOD("reload_from_file"), &Resource::reload_from_file);
 
 	ClassDB::bind_static_method("Resource", D_METHOD("generate_scene_unique_id"), &Resource::generate_scene_unique_id);
 	ClassDB::bind_method(D_METHOD("set_scene_unique_id", "id"), &Resource::set_scene_unique_id);

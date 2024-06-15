@@ -38,6 +38,7 @@
 #include <stdio.h>
 
 Error PackedData::add_pack(const String &p_path, bool p_replace_files, uint64_t p_offset) {
+	WARN_PRINT(vformat("[A] Source count is %d.", sources.size()));
 	for (int i = 0; i < sources.size(); i++) {
 		if (sources[i]->try_open_pack(p_path, p_replace_files, p_offset)) {
 			return OK;
@@ -49,9 +50,12 @@ Error PackedData::add_pack(const String &p_path, bool p_replace_files, uint64_t 
 
 void PackedData::add_path(const String &p_pkg_path, const String &p_path, uint64_t p_ofs, uint64_t p_size, const uint8_t *p_md5, PackSource *p_src, bool p_replace_files, bool p_encrypted) {
 	String simplified_path = p_path.simplify_path();
+	WARN_PRINT(vformat("[A] Simplified path: %s", simplified_path));
+
 	PathMD5 pmd5(simplified_path.md5_buffer());
 
 	bool exists = files.has(pmd5);
+	WARN_PRINT(vformat("[A] Exists: %s.", exists));
 
 	PackedFile pf;
 	pf.encrypted = p_encrypted;
@@ -73,6 +77,7 @@ void PackedData::add_path(const String &p_pkg_path, const String &p_path, uint64
 		PackedDir *cd = root;
 
 		if (p.contains("/")) { //in a subdir
+			WARN_PRINT(vformat("[A] Subdir"));
 
 			Vector<String> ds = p.get_base_dir().split("/");
 
@@ -91,6 +96,7 @@ void PackedData::add_path(const String &p_pkg_path, const String &p_path, uint64
 		String filename = simplified_path.get_file();
 		// Don't add as a file if the path points to a directory
 		if (!filename.is_empty()) {
+			WARN_PRINT(vformat("[A] Insert filename: %s", filename));
 			cd->files.insert(filename);
 		}
 	}
@@ -128,6 +134,7 @@ PackedData::~PackedData() {
 //////////////////////////////////////////////////////////////////
 
 bool PackedSourcePCK::try_open_pack(const String &p_path, bool p_replace_files, uint64_t p_offset) {
+	WARN_PRINT(vformat("[A] PackedSourcePCK try_open_pack."));
 	Ref<FileAccess> f = FileAccess::open(p_path, FileAccess::READ);
 	if (f.is_null()) {
 		return false;
@@ -218,6 +225,8 @@ bool PackedSourcePCK::try_open_pack(const String &p_path, bool p_replace_files, 
 	}
 
 	int file_count = f->get_32();
+	WARN_PRINT(vformat("[A] File count %d.", file_count));
+
 
 	if (rel_filebase) {
 		file_base += pck_start_pos;
@@ -248,6 +257,7 @@ bool PackedSourcePCK::try_open_pack(const String &p_path, bool p_replace_files, 
 
 		String path;
 		path.parse_utf8(cs.ptr());
+		WARN_PRINT(vformat("[A] File path: %s", path));
 
 		uint64_t ofs = file_base + f->get_64();
 		uint64_t size = f->get_64();
@@ -415,10 +425,12 @@ Error DirAccessPack::list_dir_begin() {
 	list_files.clear();
 
 	for (const KeyValue<String, PackedData::PackedDir *> &E : current->subdirs) {
+		WARN_PRINT(vformat("[A] Add listdir dir: %s", E.key));
 		list_dirs.push_back(E.key);
 	}
 
 	for (const String &E : current->files) {
+		WARN_PRINT(vformat("[A] Add listdir file: %s", E));
 		list_files.push_back(E);
 	}
 
