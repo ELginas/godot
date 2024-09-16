@@ -986,6 +986,8 @@ void EditorProperty::_update_pin_flags() {
 }
 
 Control *EditorProperty::make_custom_tooltip(const String &p_text) const {
+	WARN_PRINT("make_custom_tooltip: " + p_text);
+
 	String custom_warning;
 	if (object->has_method("_get_property_warning")) {
 		custom_warning = object->call("_get_property_warning", property);

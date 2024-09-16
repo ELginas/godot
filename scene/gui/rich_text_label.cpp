@@ -388,6 +388,7 @@ float RichTextLabel::_resize_line(ItemFrame *p_frame, int p_line, const Ref<Font
 				}
 			} break;
 			case ITEM_TABLE: {
+				// Might be interesting
 				ItemTable *table = static_cast<ItemTable *>(it);
 				int col_count = table->columns.size();
 
@@ -625,6 +626,7 @@ float RichTextLabel::_shape_line(ItemFrame *p_frame, int p_line, const Ref<Font>
 						t_char_count += cell_ch;
 						remaining_characters -= cell_ch;
 
+						// Table width
 						table->columns[column].min_width = MAX(table->columns[column].min_width, ceil(frame->lines[i].text_buf->get_size().x));
 						table->columns[column].max_width = MAX(table->columns[column].max_width, ceil(frame->lines[i].text_buf->get_non_wrapped_size().x));
 					}

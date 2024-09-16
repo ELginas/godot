@@ -2649,6 +2649,8 @@ static void _add_text_to_rt(const String &p_bbcode, RichTextLabel *p_rt, const C
 
 			pos = end_pos + 7; // `len("[/code]")`.
 		} else if (tag == "codeblock" || tag.begins_with("codeblock ")) {
+			// It does autowrapping but too late for some reason and it only affects tables.
+
 			int end_pos = bbcode.find("[/codeblock]", brk_end + 1);
 			if (end_pos < 0) {
 				end_pos = bbcode.length();
@@ -2691,7 +2693,7 @@ static void _add_text_to_rt(const String &p_bbcode, RichTextLabel *p_rt, const C
 			// This makes the background color highlight cover the entire block, rather than individual lines.
 			p_rt->push_font(doc_code_font);
 			p_rt->push_font_size(doc_code_font_size);
-			p_rt->push_table(2);
+			// p_rt->push_table(2);
 
 			p_rt->push_cell();
 			p_rt->set_cell_row_background_color(code_bg_color, Color(code_bg_color, 0.99));
@@ -2700,12 +2702,12 @@ static void _add_text_to_rt(const String &p_bbcode, RichTextLabel *p_rt, const C
 
 			bool codeblock_printed = false;
 
-#ifdef MODULE_GDSCRIPT_ENABLED
-			if (!codeblock_printed && (lang.is_empty() || lang == "gdscript")) {
-				EditorHelpHighlighter::get_singleton()->highlight(p_rt, EditorHelpHighlighter::LANGUAGE_GDSCRIPT, codeblock_text, is_native);
-				codeblock_printed = true;
-			}
-#endif
+// #ifdef MODULE_GDSCRIPT_ENABLED
+// 			if (!codeblock_printed && (lang.is_empty() || lang == "gdscript")) {
+// 				EditorHelpHighlighter::get_singleton()->highlight(p_rt, EditorHelpHighlighter::LANGUAGE_GDSCRIPT, codeblock_text, is_native);
+// 				codeblock_printed = true;
+// 			}
+// #endif
 
 #ifdef MODULE_MONO_ENABLED
 			if (!codeblock_printed && lang == "csharp") {
@@ -2723,16 +2725,16 @@ static void _add_text_to_rt(const String &p_bbcode, RichTextLabel *p_rt, const C
 			p_rt->pop(); // cell
 
 			// Copy codeblock button.
-			p_rt->push_cell();
-			p_rt->set_cell_row_background_color(code_bg_color, Color(code_bg_color, 0.99));
-			p_rt->set_cell_padding(Rect2(0, 10 * EDSCALE, 0, 10 * EDSCALE));
-			p_rt->set_cell_size_override(Vector2(1, 1), Vector2(10, 10) * EDSCALE);
-			p_rt->push_meta("^" + codeblock_copy_text, RichTextLabel::META_UNDERLINE_ON_HOVER);
-			p_rt->add_image(p_owner_node->get_editor_theme_icon(SNAME("ActionCopy")), 24 * EDSCALE, 24 * EDSCALE, Color(link_property_color, 0.3), INLINE_ALIGNMENT_BOTTOM_TO, Rect2(), Variant(), false, TTR("Click to copy."));
-			p_rt->pop(); // meta
-			p_rt->pop(); // cell
+			// p_rt->push_cell();
+			// p_rt->set_cell_row_background_color(code_bg_color, Color(code_bg_color, 0.99));
+			// p_rt->set_cell_padding(Rect2(0, 10 * EDSCALE, 0, 10 * EDSCALE));
+			// p_rt->set_cell_size_override(Vector2(1, 1), Vector2(10, 10) * EDSCALE);
+			// p_rt->push_meta("^" + codeblock_copy_text, RichTextLabel::META_UNDERLINE_ON_HOVER);
+			// p_rt->add_image(p_owner_node->get_editor_theme_icon(SNAME("ActionCopy")), 24 * EDSCALE, 24 * EDSCALE, Color(link_property_color, 0.3), INLINE_ALIGNMENT_BOTTOM_TO, Rect2(), Variant(), false, TTR("Click to copy."));
+			// p_rt->pop(); // meta
+			// p_rt->pop(); // cell
 
-			p_rt->pop(); // table
+			// p_rt->pop(); // table
 			p_rt->pop(); // font_size
 			p_rt->pop(); // font
 
@@ -3588,6 +3590,7 @@ void EditorHelpBit::_update_labels() {
 	}
 
 	if (!help_data.description.is_empty()) {
+		WARN_PRINT("help_data.description: " + help_data.description);
 		if (has_prev_text) {
 			content->add_newline();
 			content->add_newline();
@@ -3748,7 +3751,9 @@ void EditorHelpBit::set_custom_text(const String &p_type, const String &p_name, 
 	symbol_name = p_name;
 
 	help_data = HelpData();
+	
 	help_data.description = p_description;
+	WARN_PRINT("help_data.description 2: " + p_description);
 
 	if (is_inside_tree()) {
 		_update_labels();
