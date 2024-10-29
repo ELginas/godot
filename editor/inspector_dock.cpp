@@ -465,6 +465,7 @@ void InspectorDock::_notification(int p_what) {
 void InspectorDock::_bind_methods() {
 	ClassDB::bind_method("store_script_properties", &InspectorDock::store_script_properties);
 	ClassDB::bind_method("apply_script_properties", &InspectorDock::apply_script_properties);
+	ClassDB::bind_method("_menu_expandall", &InspectorDock::_menu_expandall);
 
 	ADD_SIGNAL(MethodInfo("request_help"));
 }
