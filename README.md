@@ -1,3 +1,8 @@
+Compatible with _Auto Expand Property Inspector_ plugin.
+
+https://github.com/user-attachments/assets/93a44323-1d66-445c-af81-198a7be526ca
+
+
 # Godot Engine
 
 <p align="center">
